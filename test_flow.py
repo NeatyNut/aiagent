@@ -2,6 +2,8 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 from dotenv import load_dotenv
+import bs4
+from langchain_community.document_loaders import WebBaseLoader
 
 if "GOOGLE_API_KEY" not in os.environ:
     load_dotenv()
@@ -37,8 +39,24 @@ from langchain_core.prompts import ChatPromptTemplate
 
 # print(response)
 
-# aiagent 활용
+# web scrap
 
-from langchain.agents import initialize_agent, load_tools, AgentType
+async def get_doc():
 
-tools = load_tools(["llm-math"], llm=llm)
+    page_url = "https://www.adiga.kr/ucp/cls/uni/classUnivView.do?menuId=PCCLSINF2000"
+
+    loader = WebBaseLoader(web_paths=[page_url])
+    docs = []
+    async for doc in loader.alazy_load():
+        docs.append(doc)
+
+    assert len(docs) == 1
+    doc = docs[0]
+    return doc
+
+async def main():
+    result = await get_doc()
+    print(result)
+
+import asyncio
+asyncio.run(main())
