@@ -57,6 +57,7 @@ async def get_doc():
 async def main():
     result = await get_doc()
     print(result)
+    print()
 
 import asyncio
 asyncio.run(main())
