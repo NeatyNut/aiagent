@@ -46,17 +46,17 @@ def search_university_info_from_adiga(school_name: str) -> str:
         driver.get("https://www.adiga.kr/man/inf/mainView.do?menuId=PCMANINF1000")
         
         # 검색창 요소 찾기 (실제 사이트 구조에 맞게 수정 필요)
-        search_input = driver.find_element(By.NAME, "searchKeyword")
+        search_input = driver.find_element(By.CSS_SELECTOR, "#autoComplet")
         search_input.send_keys(school_name)
         
         # 검색 버튼 클릭
-        search_btn = driver.find_element(By.CSS_SELECTOR, "button.search-btn")
+        search_btn = driver.find_element(By.CSS_SELECTOR, "#header > div.headCont01 > div.hSearch > div.hSearchBox > a")
         search_btn.click()
         
         # 결과 대기 및 처리
         driver.implicitly_wait(3)
         result = driver.page_source  # 실제 데이터 추출 로직 추가
-        
+        print(f"result : {result}")
         return f"{school_name} 검색 완료. 결과 페이지 HTML 길이: {len(result)}"
         
     except Exception as e:

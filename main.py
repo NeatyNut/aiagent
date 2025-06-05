@@ -16,4 +16,4 @@ agent = initialize_agent(
     memory = ConversationBufferMemory(memory_key="chat_history")
 )
 
-agent.invoke("수원대에 대해 알려줄래?")
+agent.invoke("경희대에 대해 알려줄래?")
