@@ -56,7 +56,6 @@ def search_university_info_from_adiga(school_name: str) -> str:
         # 결과 대기 및 처리
         driver.implicitly_wait(3)
         result = driver.page_source  # 실제 데이터 추출 로직 추가
-        print(f"result : {result}")
         return f"{school_name} 검색 완료. 결과 페이지 HTML 길이: {len(result)}"
         
     except Exception as e:
