@@ -66,5 +66,3 @@ def GET_Uni_Base_Info(uni:str):
 #         page.locator(f"button.accordionBtn:has-text('2. {year-1}학년도 전형 결과')").click()
 #         page.wait_for_selector(".popupCmpList", state="visible", timeout=10000)
 #         ## 열어서 내부 데이터를 가져오는 법 찾는 중 ::: Ctrl+U에서 	//컨텐츠 검색 함수에서 막힘
-        
-#         return page.url
