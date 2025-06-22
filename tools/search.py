@@ -1,65 +1,70 @@
-from langchain_core.tools import tool
-import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from langchain.tools import tool
+from playwright.sync_api import sync_playwright
+from datetime import datetime
 
 @tool
-def extract_university_url(school_name: str) -> str:
-    """Naver를 통해 학교명 검색"""
-# Construct the search URL with the school name
-    search_url = f"https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={school_name}"
-    
-    try:
-        # Send a GET request to the search URL
-        response = requests.get(search_url, headers={'User-Agent': 'Mozilla/5.0'})
-        response.raise_for_status()  # Raise an exception for bad responses
-        
-        # Parse the HTML content
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Use the provided CSS selector to find the element
-        selector = "#main_pack > div.sc_new.cs_common_module.case_normal.color_5._university > div.cm_content_wrap > div:nth-child(1) > div > div.button_area > div > ul > li:nth-child(1) > a"
-        element = soup.select_one(selector)
-        
-        # Extract the href attribute if the element exists
-        if element and element.has_attr('href'):
-            return element['href']
-        else:
-            return f"No URL found for school: {school_name}. Element not found with the specified selector."
-    
-    except Exception as e:
-        return f"Error occurred: {str(e)}"
-    
+def GET_Uni_code(uni:str):
+    """
+    어디가 사이트 내 대학코드 얻기(uni_code)
+
+    Args:
+        uni (str) : 검색할 대학명
+    """
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page("https://www.adiga.kr/ucp/uvt/uni/univView.do?menuId=PCUVTINF2000")
+        page.locator("#searchTitle").fill(uni)
+        page.locator("#frm > div > div.ltCont > div > div.cptSearchIpt > div > a").click()
+        uni_code = page.locator("#tbResult > table > tbody > tr > td:nth-child(1) > span > a").get_attribute("code")
+        browser.close()
+    return uni_code
+
 @tool
-def search_university_info_from_adiga(school_name: str) -> str:
-    """대학명으로 adiga.kr 사이트 검색을 수행하는 툴"""
+def GET_Uni_Base_Info(uni:str):
+    """
+    대학 주소/전화, 수시 모집요강, 정시 모집요강, 입학처 홈페이지 등을 얻을 수 있는 어디가 사이트 주소를 제공합니다.
+
+    Args:
+        uni (str) : 검색할 대학명
+    """
+    print(f"되고 있는거야? : {uni}")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page("https://www.adiga.kr/ucp/uvt/uni/univView.do?menuId=PCUVTINF2000")
+        page.locator("#searchTitle").fill(uni)
+        page.locator("#frm > div > div.ltCont > div > div.cptSearchIpt > div > a").click()
+        page.locator("#tbResult > table > tbody > tr > td:nth-child(1) > span > a").click()
+        browser.close()
+    return page.url
+
+# @tool
+# def GET_Addmission_Score(uni_code: str, year:int, kind:Literal["학생부종합전형", "학생부교과전형", "수능위주전형"]) -> str:
+#     """
+#     대학의 전형유형 입시 결과 페이지 URL을 반환합니다.
     
-    # Chrome 옵션 설정 (헤드리스 모드)
-    chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
-    chrome_options.add_argument("--disable-gpu")
-    
-    try:
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.get("https://www.adiga.kr/man/inf/mainView.do?menuId=PCMANINF1000")
+#     Args:
+#         uni_code (str): 검색할 대학 코드(Get_uni_code tool을 통해 획득 가능)
+#         year (int): 조회할 연도(작년 입학성적 조회를 위해선 올해 연도보다 1년 추가한 값 기입 ex if today == 2025 => 2026)
+#         kind (str): 전형유형
+
+#     Returns:
+#         str: 입시 결과 페이지 URL
+#     """
+
+#     indexs = {
+#         "학생부종합전형" : 20,
+#         "학생부교과전형" : 30,
+#         "수능위주전형" : 40
+#     }
+
+
+#     with sync_playwright() as p:
+#         browser = p.chromium.launch(headless=False)
+#         page = browser.new_page()
+#         page.goto(f"https://www.adiga.kr/uct/acd/ade/criteriaAndResultPopup.do?unvCd={uni_code}&searchSyr={year}&tsrdCmphSlcnArtclUpCd={indexs[kind]}")
+#         page.locator(f"button.accordionBtn:has-text('2. {year-1}학년도 전형 결과')").click()
+#         page.wait_for_selector(".popupCmpList", state="visible", timeout=10000)
+#         ## 열어서 내부 데이터를 가져오는 법 찾는 중 ::: Ctrl+U에서 	//컨텐츠 검색 함수에서 막힘
         
-        # 검색창 요소 찾기 (실제 사이트 구조에 맞게 수정 필요)
-        search_input = driver.find_element(By.CSS_SELECTOR, "#autoComplet")
-        search_input.send_keys(school_name)
-        
-        # 검색 버튼 클릭
-        search_btn = driver.find_element(By.CSS_SELECTOR, "#header > div.headCont01 > div.hSearch > div.hSearchBox > a")
-        search_btn.click()
-        
-        # 결과 대기 및 처리
-        driver.implicitly_wait(3)
-        result = driver.page_source  # 실제 데이터 추출 로직 추가
-        print(f"result : {result}")
-        return f"{school_name} 검색 완료. 결과 페이지 HTML 길이: {len(result)}"
-        
-    except Exception as e:
-        return f"오류 발생: {str(e)}"
-    finally:
-        driver.quit()
+#         return page.url

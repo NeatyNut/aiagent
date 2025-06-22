@@ -1,11 +1,11 @@
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
-from tools.search import extract_university_url, search_university_info_from_adiga
+from tools.search import GET_Uni_code, GET_Uni_Base_Info
 from langchain.memory import ConversationBufferMemory
 from LLM.instance_ai import get_aiagent
 
 # 사용할 툴 리스트
-tools = [extract_university_url, search_university_info_from_adiga]
+tools = [GET_Uni_code, GET_Uni_Base_Info]
 
 # Agent 초기화
 agent = initialize_agent(
@@ -16,4 +16,4 @@ agent = initialize_agent(
     memory = ConversationBufferMemory(memory_key="chat_history")
 )
 
-agent.invoke("경희대에 대해 알려줄래?")
+agent.invoke("서울대 올해 의예과 모집인원을 알 수 있을까?")
