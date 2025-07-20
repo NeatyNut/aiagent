@@ -37,7 +37,7 @@ def update_agent_state(agent_state, role:str, response:str):
     agent_state['history'].append({role: response})
     return agent_state
 
-def update_agent_plan_state(agent_state, task:str, tf:bool):
+def update_agent_plan_state(agent_state, task_number:int, tf:bool):
     """state의 plan을 업데이트합니다.
 
     Args:
@@ -49,8 +49,8 @@ def update_agent_plan_state(agent_state, task:str, tf:bool):
         dict: plan상태가 업데이트된 agent 상태.
     """
 
-    if agent_state.get("plan", {}).get(task, "") != "":
-        agent_state["plan"][task] = tf
+    if agent_state.get("plan", {}).get(task_number, "") != "":
+        agent_state["plan"][task_number][-1] = tf
     else:
         raise "agent_state에 속한 task를 제공하세요."
     
