@@ -12,17 +12,6 @@ def initialize_agent_state(user_message):
         'history': [{'user':user_message}]  # 대화 기록을 저장하기 위한 공간
     }
 
-def add_agent_role(role:str, role_description:str):
-    """role과 role_description을 부여합니다.
-
-    Args:
-        role(str): AI의 역할.
-        role_description(str): AI의 역할에 대한 설명.
-    
-    Returns:
-        dict: 업데이트된 agent role 상태.
-    """
-
 def update_agent_state(agent_state, role:str, response:str):
     """state를 업데이트합니다.
 

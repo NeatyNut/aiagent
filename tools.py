@@ -59,7 +59,7 @@ class planner_tool:
 
     def get_plan_dict(self):
         """
-        Description: 현재 plan을 문자열 형태로 리턴합니다.
+        Description: 현재 plan을 확인합니다.
 
         No Args
 
