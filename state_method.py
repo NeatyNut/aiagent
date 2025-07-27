@@ -12,8 +12,7 @@ def initialize_agent_state(user_message):
         'history': [{'user':user_message}]  # 대화 기록을 저장하기 위한 공간
     }
 
-# def update_agent_state(agent_state, role:str, response:str):
-def update_agent_state(agent_state, action):
+def update_agent_state(agent_state, role:str, response:str):
     """state를 업데이트합니다.
 
     Args:
