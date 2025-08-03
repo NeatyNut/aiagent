@@ -21,10 +21,8 @@ def update_agent_state(agent_state, role:str, response:str):
         response (str): AI의 응답.
 
     Returns:
-        dict: 업데이트된 agent 상태.
+        dict: 업데이트된 agent 상태.role
     """
-    role = action["role"]
-    response = action["response"]
     agent_state['history'].append({role: response})
     return agent_state
 
