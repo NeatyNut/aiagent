@@ -12,19 +12,19 @@ def initialize_agent_state(user_message):
         'history': [{'user':user_message}]  # 대화 기록을 저장하기 위한 공간
     }
 
-def update_agent_state(agent_state, role:str, response:str):
+def update_agent_state(history:list[dict[str, str]], response:dict[str, str]):
     """state를 업데이트합니다.
 
     Args:
         agent_state (dict): 현재 agent 상태.
-        role(str): AI의 역할.
-        response (str): AI의 응답.
+        response (dict): 현재 응답
 
     Returns:
         dict: 업데이트된 agent 상태.role
     """
-    agent_state['history'].append({role: response})
-    return agent_state
+
+    history.append(response)
+    return history
 
 def update_agent_plan_state(agent_state, task_number:int, tf:bool):
     """state의 plan을 업데이트합니다.

@@ -1,7 +1,9 @@
 from typing import List
+from langchain_core.tools import tool
 import json
 
 # state로 변경해야함
+@tool
 def init_plan(tasks:List[str]):
     """
     Description: paln을 작성합니다.
@@ -16,21 +18,23 @@ def init_plan(tasks:List[str]):
                 {}
                 ==> {1:["구글에서 자료 검색하기", False], 2:["보고서 형식으로 정리하기", False], 3:["보고서를 기반으로 PPT 작성하기", False]}
     """
-    plan = {idx+1:task for idx, task in enumerate(tasks)}
+    plan = {idx+1:[task, False] for idx, task in enumerate(tasks)}
     return plan
         
+@tool
 def add_plan(plan, task:str):
     """
     Description: plan에 task를 추가 합니다.
 
     Args:
+        plan (Dict[int, List[Any]]) : 기존 플랜
         task (str): 추가할 플랜
     
     Return:
         plan (Dict[int, List[Any]])
         
     Example:
-        add_plan("PPT 오타 점검하기"):
+        add_plan(plan, "PPT 오타 점검하기"):
             {1:["구글에서 자료 검색하기", False], 2:["보고서 형식으로 정리하기", False], 3:["보고서를 기반으로 PPT 작성하기", False]},    
                 ==> {1:["구글에서 자료 검색하기", False], 2:["보고서 형식으로 정리하기", False], 3:["보고서를 기반으로 PPT 작성하기", False], 4:["PPT 오타 점검하기", False]}
     """
@@ -38,18 +42,20 @@ def add_plan(plan, task:str):
     task_number = max(plan.keys())
     plan[task_number+1] = [task, False]
 
+@tool
 def delete_plan(plan, task_number:int):
     """
     Description: task_number를 통해 task를 삭제합니다.
 
     Args:
+        plan (Dict[int, List[Any]]) : 기존 플랜
         task_number (int): 삭제할 task의 task_number
     
     Return:
         plan (Dict[int, List[Any]])
 
     Example:
-        delete_plan(3):
+        delete_plan(plan, 3):
             {1:["구글에서 자료 검색하기", False], 2:["보고서 형식으로 정리하기", False], 3:["보고서를 기반으로 PPT 작성하기", False], 4:["PPT 오타 점검하기", False]}
                 ==> {1:["구글에서 자료 검색하기", False], 2:["보고서 형식으로 정리하기", False], 3:["PPT 오타 점검하기", False]}
     """
