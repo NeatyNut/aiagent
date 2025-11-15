@@ -1,4 +1,4 @@
-def initialize_agent_state(user_message):
+def initialize_agent_state():
     """agent 상태를 초기화합니다.
     
     Args:
@@ -9,10 +9,10 @@ def initialize_agent_state(user_message):
     """
     return {
         'plan': {},
-        'history': [{'user':user_message}]  # 대화 기록을 저장하기 위한 공간
+        'history': []  # 대화 기록을 저장하기 위한 공간
     }
 
-def update_agent_state(history:list[dict[str, str]], response:dict[str, str]):
+def update_agent_state(history, response:dict[str, str]):
     """state를 업데이트합니다.
 
     Args:
