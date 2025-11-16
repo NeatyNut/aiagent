@@ -1,3 +1,5 @@
+from typing import List, Dict
+
 def initialize_agent_state():
     """agent 상태를 초기화합니다.
     
@@ -12,15 +14,15 @@ def initialize_agent_state():
         'history': []  # 대화 기록을 저장하기 위한 공간
     }
 
-def update_agent_state(history, response:dict[str, str]):
+def update_agent_state(history:List[Dict[str, str]], response:Dict[str, str]):
     """state를 업데이트합니다.
 
     Args:
-        agent_state (dict): 현재 agent 상태.
-        response (dict): 현재 응답
+        history (list): 현재까지의 history.
+        response (Dict): 현재 응답
 
     Returns:
-        dict: 업데이트된 agent 상태.role
+        history (list): 업데이트된 history 상태
     """
 
     history.append(response)

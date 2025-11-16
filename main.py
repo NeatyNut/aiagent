@@ -5,8 +5,7 @@ from agents import Planner_Agent
 
 user_input = input(f'😒시키실 업무 입력 >>> ')
 
-state = Agent_State(initialize_agent_state())
-update_agent_state(state['history'], {'user':user_input})
+state = Agent_State()
 graph_builder = StateGraph(Agent_State)
 
 planner = Planner_Agent()
@@ -17,7 +16,7 @@ graph_builder.add_edge("planner", END)
 graph_builder.set_entry_point("planner")
 
 app = graph_builder.compile()
-
+state['history'] = [{'user':user_input}]
 result = app.invoke(state)
 
 print(f"🥳 최종 결과물 >>\n{result}")

@@ -19,16 +19,23 @@ class Planner_Agent:
         
         # Use a list of tuples for more robust message construction
         messages = [
-            ("system", system_prompt)
+            {"system":system_prompt}
         ]
-        for conversation in state['history']:
-            conversation
 
-        response = self.llm.invoke(messages)
+        
+        for conversation in state['history']:
+            messages.append(conversation)
+
+        message_text = ""
+
+        for message in messages:
+            message_text += f"{message.keys()[0]} : {message.values()[0]}\n"
+
+        response = self.llm.invoke(message_text)
         
         update_agent_state(state['history'], {self.name:response.content})
+        print(f"😒 state : {state}")
         state["plan"] = get_plan_dict(state["plan"])
 
-        print(f"😒 state : {state}")
         return {"plan": state["plan"]}
 

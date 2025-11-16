@@ -1,4 +1,4 @@
-from typing import TypedDict, Annotated, Optional, Dict, List
+from typing import TypedDict, Annotated, Dict, List
 from state_method import update_agent_state
 
 class Agent_State(TypedDict):
