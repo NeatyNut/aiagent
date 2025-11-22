@@ -1,14 +1,14 @@
 from langgraph.graph import StateGraph, START, END
-from state import Agent_State
-from state_method import initialize_agent_state, update_agent_state
-from agents import Planner_Agent
+from state import AgentState, init_AgentState
+from agents import PlannerAgent
+from langchain_core.messages import HumanMessage
+from langgraph.graph import add_messages
 
 user_input = input(f'😒시키실 업무 입력 >>> ')
 
-state = Agent_State()
-graph_builder = StateGraph(Agent_State)
 
-planner = Planner_Agent()
+graph_builder = StateGraph(AgentState)
+planner = PlannerAgent()
 graph_builder.add_node("planner", planner.generate)
 graph_builder.add_edge(START, "planner")
 graph_builder.add_edge("planner", END)
@@ -16,7 +16,9 @@ graph_builder.add_edge("planner", END)
 graph_builder.set_entry_point("planner")
 
 app = graph_builder.compile()
-state['history'] = [{'user':user_input}]
+state = AgentState()
+state = init_AgentState(state)
+state['messages'] = add_messages(state['messages'], HumanMessage(user_input))
 result = app.invoke(state)
 
 print(f"🥳 최종 결과물 >>\n{result}")

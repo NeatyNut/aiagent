@@ -1,8 +1,9 @@
-from typing import TypedDict, Annotated, Dict, List
-from state_method import update_agent_state
+from typing import TypedDict, Annotated
+from langgraph.graph import add_messages
 
-class Agent_State(TypedDict):
-    plan: Dict[int, List]
-    history: Annotated[List[Dict[str, str]], update_agent_state]
+class AgentState(TypedDict):
+    messages: Annotated[list, add_messages]
 
-
+def init_AgentState(state:AgentState):
+    state["messages"] = []
+    return state
