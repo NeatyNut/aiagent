@@ -3,7 +3,4 @@ from langgraph.graph import add_messages
 
 class AgentState(TypedDict):
     messages: Annotated[list, add_messages]
-
-def init_AgentState(state:AgentState):
-    state["messages"] = []
-    return state
+    tasks: dict[int, list[tuple[str, bool]]]
