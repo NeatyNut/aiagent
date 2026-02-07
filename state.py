@@ -3,4 +3,4 @@ from langgraph.graph import add_messages
 
 class AgentState(TypedDict):
     messages: Annotated[list, add_messages]
-    tasks: dict[int, list[tuple[str, bool]]]
+    tasks: dict[int, tuple[str, bool]]

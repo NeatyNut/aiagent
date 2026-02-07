@@ -1,4 +1,4 @@
 .env
-.pyc
+*.pyc
 __pycache__
 aiagent_langgraph/
